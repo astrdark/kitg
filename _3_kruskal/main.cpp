@@ -1,6 +1,7 @@
 #include <vector>
 #include <algorithm>
 #include <ranges>
+#include <print>
 
 using u32 = uint32_t;
 using i32 = int32_t;
@@ -37,8 +38,9 @@ struct Edge {
 
 using TGraph = std::vector<Edge>;
 
-TGraph kraskal(TGraph in) {
-    TGraph out(in.size());
+TGraph kruskal(TGraph in) {
+    TGraph out;
+    out.reserve(in.size());
     DSU dsu(in.size());
 
     std::ranges::sort(
@@ -60,5 +62,19 @@ TGraph kraskal(TGraph in) {
 }
 
 int main() {
+    TGraph input = {
+        {  1,  2,    1  },
+        {  1,  3,    8  },
+        {  2,  3,    5  },
+        {  2,  4,  100  },
+        {  3,  5,   25  },
+        {  4,  5,    6  },
+        {  4,  6,   53  },
+        {  5,  6,   11  }
+    };
 
+    TGraph out = kruskal(std::move(input));
+    for (auto[a,b,w] : out) {
+        std::println("({}, {}) = {}", a, b, w);
+    }
 }
