@@ -6,6 +6,8 @@
 #include <chrono>
 #include <ranges>
 
+#include "../minibench.hpp"
+
 using i32 = int32_t;
 using usize = size_t;
 
@@ -95,21 +97,6 @@ private:
 	std::vector<i32> data;
 };
 
-struct MiniBenchmark {
-	template<typename Fn>
-	static float benchmark(Fn&& fn) {
-		constexpr usize NUM_ITERATIONS = 16;
-
-		const auto start = std::chrono::high_resolution_clock::now();
-		for (usize i : std::views::iota(0u, NUM_ITERATIONS)) {
-			fn();
-		}
-		const auto end = std::chrono::high_resolution_clock::now();
-
-		const float count = float(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-		return count / float(NUM_ITERATIONS);
-	}
-};
 
 int main() {
 	constexpr usize SIZE = 1024u;

@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <print>
 
+#include "../minibench.hpp"
+
 using u32 = uint32_t;
 using i32 = int32_t;
 using usize = size_t;
@@ -114,13 +116,15 @@ u32 ford_fulkenson(Graph graph) {
     do {
         rez = search(graph, graph.source, INF, mark++);
         sum += rez;
-        std::println("rez = {}", rez);
+        //std::println("rez = {}", rez);
     } while (rez != 0);
 
     return sum;
 }
 
 int main() {
+    const usize GRAPH_SIZE = 11;
+
     Graph graph;
     graph.add_edge(0, 1, 100);
     graph.add_edge(0, 2, 1000);
@@ -128,10 +132,52 @@ int main() {
     graph.add_edge(2, 3, 100);
     graph.add_edge(2, 4, 500);
     graph.add_edge(3, 4, 250);
+    // 6
+    if (GRAPH_SIZE > 6) {
+        graph.add_edge(0, 5, 150);
+        graph.add_edge(5, 3, 10);
+        graph.add_edge(5, 2, 150);
+        graph.add_edge(5, 4, 50);
+        graph.add_edge(2, 6, 500);
+        graph.add_edge(6, 7, 450);
+        // 12
+    }
+    if (GRAPH_SIZE > 11) {
+        graph.add_edge(7, 4, 150);
+        graph.add_edge(7, 8, 50);
+        graph.add_edge(8, 4, 25);
+        graph.add_edge(8, 3, 25);
+        // 16
+    }
+    if (GRAPH_SIZE > 16) {
+        graph.add_edge(0, 10, 10000);
+
+        graph.add_edge(10, 11, 1500);
+        graph.add_edge(11, 12, 500);
+        graph.add_edge(11, 13, 250);
+        graph.add_edge(12, 19, 175);
+        graph.add_edge(13, 19, 175);
+
+        graph.add_edge(10, 15, 500);
+        graph.add_edge(10, 16, 150);
+        graph.add_edge(15, 17, 500);
+        graph.add_edge(15, 18, 500);
+        graph.add_edge(17, 19, 500);
+        graph.add_edge(18, 19, 500);
+
+        graph.add_edge(10, 18, 100);
+        graph.add_edge(10, 17, 100);
+
+        graph.add_edge(19, 4, 10000);
+        // 32
+    }
 
     graph.source = 0;
     graph.drain = 4;
 
-    u32 result = ford_fulkenson(graph);
-    std::println("res = {}", result);
+    float time = MiniBenchmark::benchmark([&] {
+        u32 result = ford_fulkenson(graph);
+    });
+
+    std::println("took {} us", time);
 }
